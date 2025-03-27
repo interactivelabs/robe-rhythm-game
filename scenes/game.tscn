@@ -1,0 +1,26 @@
+[gd_scene load_steps=8 format=3 uid="uid://d4d6uwhtectdk"]
+
+[ext_resource type="Script" uid="uid://cr8rlij22sd8n" path="res://scripts/Game.cs" id="1_lnu2h"]
+[ext_resource type="PackedScene" uid="uid://d1728yvp4jf6q" path="res://scenes/conductor.tscn" id="1_yqjtg"]
+[ext_resource type="AudioStream" uid="uid://74hgx2jgqkq0" path="res://assets/music/apt-rose.mp3" id="2_lnu2h"]
+[ext_resource type="PackedScene" uid="uid://cscrxvi65lvso" path="res://scenes/texture_01.tscn" id="2_u5sy4"]
+[ext_resource type="PackedScene" uid="uid://bx1ax5r8a8dos" path="res://scenes/texture_02.tscn" id="3_gee14"]
+[ext_resource type="PackedScene" uid="uid://du8aeivfx82ff" path="res://scenes/texture_03.tscn" id="4_0tnpc"]
+[ext_resource type="PackedScene" uid="uid://dc27aygxtyip5" path="res://scenes/player.tscn" id="4_lbhrr"]
+
+[node name="Game" type="Node2D" node_paths=PackedStringArray("_scene")]
+script = ExtResource("1_lnu2h")
+_scene = NodePath("Tiles")
+_tiles = Array[PackedScene]([ExtResource("2_u5sy4"), ExtResource("3_gee14"), ExtResource("4_0tnpc")])
+
+[node name="Conductor" parent="." instance=ExtResource("1_yqjtg")]
+stream = ExtResource("2_lnu2h")
+
+[node name="Tiles" type="Node2D" parent="."]
+
+[node name="Player" parent="." instance=ExtResource("4_lbhrr")]
+z_index = 5
+
+[node name="Camera2D" type="Camera2D" parent="Player"]
+zoom = Vector2(4, 4)
+position_smoothing_enabled = true
