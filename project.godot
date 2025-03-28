@@ -16,6 +16,12 @@ run/main_scene="uid://d4d6uwhtectdk"
 config/features=PackedStringArray("4.4", "C#", "Mobile")
 config/icon="res://icon.svg"
 
+[display]
+
+window/size/viewport_width=3456
+window/size/viewport_height=1944
+window/stretch/scale=3.0
+
 [dotnet]
 
 project/assembly_name="Robe Rhythm Game"

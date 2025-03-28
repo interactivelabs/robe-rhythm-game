@@ -20,7 +20,9 @@ stream = ExtResource("2_lnu2h")
 
 [node name="Player" parent="." instance=ExtResource("4_lbhrr")]
 z_index = 5
+position = Vector2(1, 4)
 
-[node name="Camera2D" type="Camera2D" parent="Player"]
+[node name="Camera2D" type="Camera2D" parent="."]
+position = Vector2(100, 0)
 zoom = Vector2(4, 4)
 position_smoothing_enabled = true
