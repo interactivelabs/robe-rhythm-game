@@ -26,6 +26,10 @@ window/stretch/scale=3.0
 
 project/assembly_name="Robe Rhythm Game"
 
+[physics]
+
+2d/default_gravity=0.0
+
 [rendering]
 
 textures/canvas_textures/default_texture_filter=0
