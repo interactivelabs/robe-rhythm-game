@@ -5,7 +5,7 @@
 [ext_resource type="AudioStream" uid="uid://74hgx2jgqkq0" path="res://assets/music/apt-rose.mp3" id="2_lnu2h"]
 [ext_resource type="PackedScene" uid="uid://cscrxvi65lvso" path="res://scenes/texture.tscn" id="2_u5sy4"]
 [ext_resource type="Script" uid="uid://oiq2yk4s3sor" path="res://scripts/GameManager.cs" id="3_p57ef"]
-[ext_resource type="PackedScene" uid="uid://fawns5n2fjxa" path="res://scenes/slime_green.tscn" id="4_0tnpc"]
+[ext_resource type="PackedScene" uid="uid://fawns5n2fjxa" path="res://scenes/enemy_slime_green.tscn" id="4_0tnpc"]
 [ext_resource type="PackedScene" uid="uid://dc27aygxtyip5" path="res://scenes/player.tscn" id="4_lbhrr"]
 [ext_resource type="PackedScene" uid="uid://doajnarr755g4" path="res://scenes/coin.tscn" id="5_vtaks"]
 [ext_resource type="PackedScene" uid="uid://ddv1sbf6nx84b" path="res://scenes/fruit.tscn" id="6_kvpfn"]
