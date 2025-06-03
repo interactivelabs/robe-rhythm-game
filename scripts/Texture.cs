@@ -1,23 +1,29 @@
 using Godot;
 using System;
+using System.Drawing;
 
 public partial class Texture : Sprite2D
 {
 
 	[Export]
-	public float speed { get; set; }
+	public float Speed { get; set; }
 
-	// Called when the node enters the scene tree for the first time.
 	public override void _Ready()
 	{
+		if (Speed == 0)
+		{
+			Speed = GameSettings.DefaultSpeed;
+		}
+		base._Ready();
 	}
 
-	// Called every frame. 'delta' is the elapsed time since the previous frame.
 	public override void _PhysicsProcess(double delta)
 	{
-		GlobalPosition += new Vector2(speed * (float)delta, 0);
+		Position -= new Vector2(Speed * (float)delta, 0);
 
-		if (Position.Y > GetViewportRect().Size.X)
+		// TODO: check if the texture is off-screen
+		// If the texture is off-screen, remove it from the scene
+		if (Position.X < -80)
 		{
 			QueueFree();
 		}

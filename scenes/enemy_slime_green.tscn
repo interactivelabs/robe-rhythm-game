@@ -1,5 +1,6 @@
-[gd_scene load_steps=8 format=3 uid="uid://fawns5n2fjxa"]
+[gd_scene load_steps=9 format=3 uid="uid://fawns5n2fjxa"]
 
+[ext_resource type="Script" uid="uid://baheqk6x6r835" path="res://scripts/EnemySlimeGreen.cs" id="1_ieyfl"]
 [ext_resource type="Texture2D" uid="uid://b5wi4x7u47m6d" path="res://assets/sprites/slime_green.png" id="1_kw873"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_lh1w4"]
@@ -41,13 +42,14 @@ animations = [{
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_ppyls"]
 size = Vector2(13.5, 12.5)
 
-[node name="SlimeGreen" type="Area2D"]
+[node name="SlimeGreen" type="CharacterBody2D"]
+script = ExtResource("1_ieyfl")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+position = Vector2(0, -6)
 sprite_frames = SubResource("SpriteFrames_bmd3v")
 autoplay = "default"
 frame_progress = 0.703964
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-position = Vector2(0, 5)
 shape = SubResource("RectangleShape2D_ppyls")

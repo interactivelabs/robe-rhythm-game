@@ -14,7 +14,7 @@
 [node name="Game" type="Node2D" node_paths=PackedStringArray("_scene")]
 script = ExtResource("1_lnu2h")
 _scene = NodePath("Tiles")
-_tiles = Array[PackedScene]([ExtResource("2_u5sy4")])
+_terrain = Array[PackedScene]([ExtResource("2_u5sy4")])
 
 [node name="GameManager" type="Node2D" parent="." node_paths=PackedStringArray("_obstaclesScene")]
 script = ExtResource("3_p57ef")
@@ -38,5 +38,7 @@ z_index = 5
 
 [node name="Camera2D" type="Camera2D" parent="."]
 position = Vector2(100, 0)
-zoom = Vector2(4, 4)
+zoom = Vector2(8, 8)
 position_smoothing_enabled = true
+
+[connection signal="timeout" from="GameManager/SpawnerTimer" to="GameManager" method="_on_spawner_timer_timeout"]

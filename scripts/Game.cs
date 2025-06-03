@@ -5,20 +5,14 @@ public partial class Game : Node2D
 
 	[Export] private Node2D _scene;
 
-	[Export] private PackedScene[] _tiles;
+	[Export] private PackedScene[] _terrain;
 
 	AudioStreamPlayer songPlayer;
 
-	const int _TextureSize = 256;
-	const float _TileScaleSize = 0.078125f;
-	const float _TileOffsetSize = _TextureSize * _TileScaleSize;
-	const int RowsInColumn = 3;
-	const int MaxColumns = 15;
-	private double _currentColumnProgress = 0;
-	private int _playerColumnProgress = 0;
 	private double _bpm = 152;
-	private double _Speed = 2;
-	private int _MaxSpeed = 10;
+	private float _Speed = 50.0f;
+
+	private float _NextColumnOffset = 0f;
 
 
 	// Called when the node enters the scene tree for the first time.
@@ -29,61 +23,53 @@ public partial class Game : Node2D
 		songPlayer = GetNode<AudioStreamPlayer>("Conductor");
 		// songPlayer.Play();
 
-		_Speed = 60f / _bpm;
-		GD.Print("Speed: " + _Speed);
+		// _Speed = 60f / _bpm; 
 
 		_scene.GlobalPosition = new Vector2(0, 0);
 
-		// Initialize the level with Empty Columns
-		for (int i = -4; i <= MaxColumns; i++)
-		{
-			InstantiateColumn(i);
-		}
+		// Initialize the terrain
+		initializeTerrain();
 	}
 
 	public override void _PhysicsProcess(double delta)
 	{
-
-		double progress = _TileOffsetSize * _Speed * delta;
-		foreach (Node n in _scene.GetChildren())
-			((Node2D)n).Translate(Vector2.Left * (float)progress);
-
-		_currentColumnProgress += progress;
-		if (_currentColumnProgress >= _TileOffsetSize)
+		var progress = _Speed * (float)delta;
+		_NextColumnOffset -= progress;
+		if (_NextColumnOffset <= 0)
 		{
-			_playerColumnProgress += 1;
-			_currentColumnProgress = 0;
-			InstantiateColumn(MaxColumns);
-			_scene.GetChild(0).QueueFree();
+			_NextColumnOffset = GameSettings.RowSize; // Reset the offset for the next column
+			AddColumn();
 		}
-
 		base._PhysicsProcess(delta);
-
 	}
 
-	private void InstantiateColumn(int screenOffset)
+	private void initializeTerrain()
 	{
-		Node2D column = GetTilesColumn(RowsInColumn);
-		column.GlobalPosition = Vector2.Right * screenOffset * _TileOffsetSize;
-		_scene.AddChild(column);
-	}
-
-	private Sprite2D GetTileInstance(float position = 0)
-	{
-		Sprite2D tile = _tiles[0].Instantiate<Sprite2D>();
-		tile.Scale = new Vector2(0.07f, 0.07f);
-		tile.Position = Vector2.Up * position * _TileOffsetSize;
-		return tile;
-	}
-
-	private Node2D GetTilesColumn(int rowsInColumn)
-	{
-		var column = new Node2D();
-		for (int i = 0; i < rowsInColumn; i++)
+		for (int i = 0; i < GameSettings.MaxColumns; i++)
 		{
-			Sprite2D tile = GetTileInstance(i);
-			column.AddChild(tile);
+			for (int j = -1; j < GameSettings.RowsInColumn - 1; j++)
+			{
+				AddTerrainBlock(i, j);
+			}
 		}
-		return column;
 	}
+
+	private void AddColumn()
+	{
+		for (int j = -1; j < GameSettings.RowsInColumn - 1; j++)
+		{
+			AddTerrainBlock(15, j);
+		}
+	}
+
+	private void AddTerrainBlock(int column, int row)
+	{
+		var terrain = _terrain[0];
+		var terrainInstance = terrain.Instantiate<Node2D>();
+		terrainInstance.GlobalPosition = new Vector2(column * GameSettings.RowSize, row * GameSettings.RowSize);
+		terrainInstance.Scale = new Vector2(GameSettings.TileScaleSize, GameSettings.TileScaleSize);
+		_scene.AddChild(terrainInstance);
+
+	}
+
 }
