@@ -25,7 +25,7 @@ public partial class Game : Node2D
 	{
 		GD.Print("Game Started!");
 		songPlayer = GetNode<AudioStreamPlayer>("Conductor");
-		songPlayer.Play();
+		// songPlayer.Play();
 
 		_scene.GlobalPosition = new Vector2(0, 0);
 
