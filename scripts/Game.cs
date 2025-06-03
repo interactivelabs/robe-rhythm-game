@@ -58,7 +58,7 @@ public partial class Game : Node2D
 	{
 		for (int j = -1; j < GameSettings.RowsInColumn - 1; j++)
 		{
-			AddTerrainBlock(15, j);
+			AddTerrainBlock(GameSettings.MaxColumns, j);
 		}
 	}
 
