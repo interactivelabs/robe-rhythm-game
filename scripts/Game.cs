@@ -14,9 +14,10 @@ public partial class Game : Node2D
 	const float _TileOffsetSize = _TextureSize * _TileScaleSize;
 	const int RowsInColumn = 3;
 	const int MaxColumns = 15;
-	private float _currentColumnProgress = 0;
+	private double _currentColumnProgress = 0;
 	private int _playerColumnProgress = 0;
-	private int _Speed = 2;
+	private double _bpm = 152;
+	private double _Speed = 2;
 	private int _MaxSpeed = 10;
 
 
@@ -24,8 +25,12 @@ public partial class Game : Node2D
 	public override void _Ready()
 	{
 		GD.Print("Game Started!");
+
 		songPlayer = GetNode<AudioStreamPlayer>("Conductor");
-		songPlayer.Play();
+		// songPlayer.Play();
+
+		_Speed = 60f / _bpm;
+		GD.Print("Speed: " + _Speed);
 
 		_scene.GlobalPosition = new Vector2(0, 0);
 
@@ -39,9 +44,9 @@ public partial class Game : Node2D
 	public override void _PhysicsProcess(double delta)
 	{
 
-		float progress = _TileOffsetSize * _Speed * (float)delta;
+		double progress = _TileOffsetSize * _Speed * delta;
 		foreach (Node n in _scene.GetChildren())
-			((Node2D)n).Translate(Vector2.Left * progress);
+			((Node2D)n).Translate(Vector2.Left * (float)progress);
 
 		_currentColumnProgress += progress;
 		if (_currentColumnProgress >= _TileOffsetSize)
