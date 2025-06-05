@@ -3,7 +3,7 @@ using Godot;
 public partial class Game : Node2D
 {
 
-	[Export] private Node2D _scene;
+	[Export] private Node2D _terrainScene;
 
 	[Export] private PackedScene[] _terrain;
 
@@ -23,9 +23,11 @@ public partial class Game : Node2D
 		songPlayer = GetNode<AudioStreamPlayer>("Conductor");
 		// songPlayer.Play();
 
-		// _Speed = 60f / _bpm; 
+		// _Speed = 60f / _bpm;
+		_Speed = GameSettings.DefaultSpeed;
+		// _NextColumnOffset = GameSettings.RowSize;
 
-		_scene.GlobalPosition = new Vector2(0, 0);
+		_terrainScene.GlobalPosition = new Vector2(0, 0);
 
 		// Initialize the terrain
 		initializeTerrain();
@@ -38,7 +40,10 @@ public partial class Game : Node2D
 		if (_NextColumnOffset <= 0)
 		{
 			_NextColumnOffset = GameSettings.RowSize; // Reset the offset for the next column
-			AddColumn();
+			for (int j = -1; j < GameSettings.RowsInColumn - 1; j++)
+			{
+				AddTerrainBlock(GameSettings.MaxColumns, j);
+			}
 		}
 		base._PhysicsProcess(delta);
 	}
@@ -54,22 +59,13 @@ public partial class Game : Node2D
 		}
 	}
 
-	private void AddColumn()
-	{
-		for (int j = -1; j < GameSettings.RowsInColumn - 1; j++)
-		{
-			AddTerrainBlock(GameSettings.MaxColumns, j);
-		}
-	}
-
 	private void AddTerrainBlock(int column, int row)
 	{
 		var terrain = _terrain[0];
 		var terrainInstance = terrain.Instantiate<Node2D>();
 		terrainInstance.GlobalPosition = new Vector2(column * GameSettings.RowSize, row * GameSettings.RowSize);
 		terrainInstance.Scale = new Vector2(GameSettings.TileScaleSize, GameSettings.TileScaleSize);
-		_scene.AddChild(terrainInstance);
-
+		_terrainScene.AddChild(terrainInstance);
 	}
 
 }

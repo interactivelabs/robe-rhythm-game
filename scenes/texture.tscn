@@ -1,10 +1,10 @@
 [gd_scene load_steps=3 format=3 uid="uid://cscrxvi65lvso"]
 
-[ext_resource type="Texture2D" uid="uid://kbxym6v0v8ym" path="res://assets/sprites/world_tileset.png" id="1_ixmrb"]
+[ext_resource type="Texture2D" uid="uid://bjw637h0osunr" path="res://assets/sprites/tundraSwampTaigaForestDesert_0.png" id="1_ixmrb"]
 [ext_resource type="Script" uid="uid://b6vhr4mrybkfq" path="res://scripts/Texture.cs" id="2_ixmrb"]
 
 [node name="Texture01" type="Sprite2D"]
 texture = ExtResource("1_ixmrb")
 region_enabled = true
-region_rect = Rect2(32, 16, 16, 16)
+region_rect = Rect2(160, 64, 48, 48)
 script = ExtResource("2_ixmrb")

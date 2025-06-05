@@ -1,6 +1,4 @@
 using Godot;
-using System;
-using System.Drawing;
 
 public partial class Texture : Sprite2D
 {
@@ -23,7 +21,7 @@ public partial class Texture : Sprite2D
 
 		// TODO: check if the texture is off-screen
 		// If the texture is off-screen, remove it from the scene
-		if (Position.X < -80)
+		if (Position.X < GameSettings.RowSize * 4 * -1)
 		{
 			QueueFree();
 		}

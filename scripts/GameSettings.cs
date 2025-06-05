@@ -2,9 +2,9 @@ using Godot;
 
 public partial class GameSettings
 {
-    public const int TextureSize = 16;
-    public const float TileScaleSize = 1f;
-    public const float RowSize = TextureSize * TileScaleSize; // 1 pixel offset add gaps
+    private const int TextureSize = 48;
+    public const float TileScaleSize = 0.5f;
+    public const float RowSize = TextureSize * TileScaleSize;
 
     public const int RowsInColumn = 3;
     public const int MaxColumns = 20;

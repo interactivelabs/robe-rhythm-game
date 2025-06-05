@@ -11,14 +11,15 @@
 [ext_resource type="PackedScene" uid="uid://ddv1sbf6nx84b" path="res://scenes/fruit.tscn" id="6_kvpfn"]
 [ext_resource type="Script" uid="uid://bnj5xrm22xbmv" path="res://scripts/Conductor.cs" id="9_vtaks"]
 
-[node name="Game" type="Node2D" node_paths=PackedStringArray("_scene")]
+[node name="Game" type="Node2D" node_paths=PackedStringArray("_terrainScene")]
 script = ExtResource("1_lnu2h")
-_scene = NodePath("Tiles")
+_terrainScene = NodePath("Tiles")
 _terrain = Array[PackedScene]([ExtResource("2_u5sy4")])
 
-[node name="GameManager" type="Node2D" parent="." node_paths=PackedStringArray("_obstaclesScene")]
+[node name="GameManager" type="Node2D" parent="." node_paths=PackedStringArray("_obstaclesScene", "_pickupsScene")]
 script = ExtResource("3_p57ef")
 _obstaclesScene = NodePath("../Obstacles")
+_pickupsScene = NodePath("../Pickups")
 _obstacles = Array[PackedScene]([ExtResource("4_0tnpc")])
 _pickups = Array[PackedScene]([ExtResource("5_vtaks"), ExtResource("6_kvpfn")])
 
@@ -32,6 +33,8 @@ _startTimer = NodePath("../GameManager/SpawnerTimer")
 [node name="Tiles" type="Node2D" parent="."]
 
 [node name="Obstacles" type="Node2D" parent="."]
+
+[node name="Pickups" type="Node2D" parent="."]
 
 [node name="Player" parent="." instance=ExtResource("4_lbhrr")]
 z_index = 5
