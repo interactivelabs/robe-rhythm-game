@@ -10,9 +10,9 @@ public partial class Game : Node2D
 	AudioStreamPlayer songPlayer;
 
 	private double _bpm = 152;
-	private float _Speed = 50.0f;
+	private float _speed = 50.0f;
 
-	private float _NextColumnOffset = 0f;
+	private float _nextColumnOffset = 0f;
 
 
 	// Called when the node enters the scene tree for the first time.
@@ -24,38 +24,40 @@ public partial class Game : Node2D
 		// songPlayer.Play();
 
 		// _Speed = 60f / _bpm;
-		_Speed = GameSettings.DefaultSpeed;
+		_speed = GameSettings.DefaultSpeed;
 		// _NextColumnOffset = GameSettings.RowSize;
 
 		_terrainScene.GlobalPosition = new Vector2(0, 0);
 
 		// Initialize the terrain
-		initializeTerrain();
+		InitializeTerrain();
 	}
 
 	public override void _PhysicsProcess(double delta)
 	{
-		var progress = _Speed * (float)delta;
-		_NextColumnOffset -= progress;
-		if (_NextColumnOffset <= 0)
+		var progress = _speed * (float)delta;
+		_nextColumnOffset -= progress;
+		if (_nextColumnOffset <= 0)
 		{
-			_NextColumnOffset = GameSettings.RowSize; // Reset the offset for the next column
-			for (int j = -1; j < GameSettings.RowsInColumn - 1; j++)
-			{
-				AddTerrainBlock(GameSettings.MaxColumns, j);
-			}
+			_nextColumnOffset = GameSettings.RowSize; // Reset the offset for the next column
+			AddTerrainColumn(GameSettings.MaxColumns);
 		}
 		base._PhysicsProcess(delta);
 	}
 
-	private void initializeTerrain()
+	private void InitializeTerrain()
 	{
-		for (int i = 0; i < GameSettings.MaxColumns; i++)
+		for (var i = 0; i < GameSettings.MaxColumns; i++)
 		{
-			for (int j = -1; j < GameSettings.RowsInColumn - 1; j++)
-			{
-				AddTerrainBlock(i, j);
-			}
+			AddTerrainColumn(i);
+		}
+	}
+
+	private void AddTerrainColumn(int column)
+	{
+		for (var j = -1; j < GameSettings.RowsInColumn - 1; j++)
+		{
+			AddTerrainBlock(column, j);
 		}
 	}
 

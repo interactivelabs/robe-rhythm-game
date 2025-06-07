@@ -2,18 +2,17 @@ using Godot;
 
 public partial class Player : CharacterBody2D
 {
-	public const float _PlayerSpeed = 2.0f;
+	private const float PlayerSpeed = 2.0f;
 
-	enum PlayerRow
+	private enum PlayerRow
 	{
 		Top = -1,
 		Middle = 0,
 		Bottom = 1
 	}
 
-	PlayerRow _currentRow = PlayerRow.Middle;
-	PlayerRow _targetRow = PlayerRow.Middle;
-
+	private PlayerRow _currentRow = PlayerRow.Middle;
+	private PlayerRow _targetRow = PlayerRow.Middle;
 
 	public override void _PhysicsProcess(double delta)
 	{
@@ -29,9 +28,9 @@ public partial class Player : CharacterBody2D
 			_targetRow += 1;
 		}
 
-		float targetY = (int)_targetRow * GameSettings.RowSize;
+		var targetY = (int)_targetRow * GameSettings.RowSize;
 		Position = new Vector2(0, targetY);
-		Velocity = new Vector2(0, Mathf.Lerp(0, targetY, _PlayerSpeed * (float)delta));
+		Velocity = new Vector2(0, Mathf.Lerp(0, targetY, PlayerSpeed * (float)delta));
 
 		MoveAndSlide();
 	}

@@ -40,7 +40,7 @@ _startTimer = NodePath("../GameManager/SpawnerTimer")
 z_index = 5
 
 [node name="Camera2D" type="Camera2D" parent="."]
-position = Vector2(100, 0)
+position = Vector2(55, 0)
 zoom = Vector2(8, 8)
 position_smoothing_enabled = true
 

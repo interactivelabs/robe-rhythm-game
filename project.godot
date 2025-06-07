@@ -22,8 +22,9 @@ GameSettings="*res://scripts/GameSettings.cs"
 
 [display]
 
-window/size/viewport_width=2796
-window/size/viewport_height=1290
+window/size/viewport_width=1280
+window/size/viewport_height=720
+window/stretch/mode="viewport"
 
 [dotnet]
 

@@ -27,7 +27,7 @@ public partial class Coin : Area2D
 
         // TODO: check if the texture is off-screen
         // If the texture is off-screen, remove it from the scene
-        if (Position.X < GameSettings.RowSize * 4 * -1)
+        if (Position.X < GameSettings.RowSize * 2 * -1)
         {
             QueueFree();
         }
@@ -35,18 +35,10 @@ public partial class Coin : Area2D
         base._PhysicsProcess(delta);
     }
 
-    void _on_body_entered()
+    public void _on_body_entered(Node2D body)
     {
-        // This method will be called when a body enters the coin's area
-        GD.Print("A body has entered the coin's area!");
-
         EmitSignal(SignalName.ScoreUpdate, Value);
 
         QueueFree();
-
-        // You can add logic here to handle what happens when a body enters the coin's area
-        // For example, you might want to increase the player's score or play a sound effect
     }
 }
-
-

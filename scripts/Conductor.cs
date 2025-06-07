@@ -49,7 +49,7 @@ public partial class Conductor : AudioStreamPlayer
 		}
 	}
 
-	void ReportBeat()
+	private void ReportBeat()
 	{
 		if (_lastReportedBeat < _songPositionInBeats)
 		{
@@ -65,7 +65,7 @@ public partial class Conductor : AudioStreamPlayer
 		}
 	}
 
-	void _on_start_timer_timeout()
+	public void _on_start_timer_timeout()
 	{
 		_songPositionInBeats += 1;
 		if (_songPositionInBeats < _beatsBeforeStart - 1)

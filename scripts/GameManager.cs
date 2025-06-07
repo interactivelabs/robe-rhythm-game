@@ -10,10 +10,10 @@ public partial class GameManager : Node2D
 	[Export] private PackedScene[] _obstacles;
 	[Export] private PackedScene[] _pickups;
 
-	Timer _spawnerTimer;
+	private Timer _spawnerTimer;
 
-	private float _Speed = 50.0f;
-	private float _NextColumnOffset = 0f;
+	private float _speed = 50.0f;
+	private float _nextColumnOffset = 0f;
 
 	private bool _canAddObstacles = true;
 
@@ -24,15 +24,15 @@ public partial class GameManager : Node2D
 		_spawnerTimer = GetNode<Timer>("SpawnerTimer");
 		_spawnerTimer.Start();
 
-		_Speed = GameSettings.DefaultSpeed;
+		_speed = GameSettings.DefaultSpeed;
 		// _NextColumnOffset = GameSettings.RowSize;
 	}
 
 	public override void _PhysicsProcess(double delta)
 	{
-		var progress = _Speed * (float)delta;
-		_NextColumnOffset -= progress;
-		if (_NextColumnOffset <= 0 && _obstacles.Length > 0 && _canAddObstacles)
+		var progress = _speed * (float)delta;
+		_nextColumnOffset -= progress;
+		if (_nextColumnOffset <= 0 && _obstacles.Length > 0 && _canAddObstacles)
 		{
 			var obstacle = _obstacles[GD.RandRange(0, _obstacles.Length - 1)];
 			var obstacleInstance = obstacle.Instantiate<Node2D>();
@@ -61,9 +61,9 @@ public partial class GameManager : Node2D
 			_canAddObstacles = false;
 		}
 
-		if (_NextColumnOffset <= 0)
+		if (_nextColumnOffset <= 0)
 		{
-			_NextColumnOffset = GameSettings.RowSize; // Reset the offset for the next column
+			_nextColumnOffset = GameSettings.RowSize; // Reset the offset for the next column
 		}
 
 		base._PhysicsProcess(delta);
