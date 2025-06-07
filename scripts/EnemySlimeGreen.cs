@@ -1,5 +1,6 @@
-using Godot;
+namespace Scripts;
 
+using Godot;
 
 public partial class EnemySlimeGreen : CharacterBody2D
 {

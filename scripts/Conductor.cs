@@ -1,3 +1,5 @@
+namespace Scripts;
+
 using Godot;
 using System;
 
