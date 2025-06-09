@@ -33,8 +33,8 @@ public partial class GameManager : Node2D
 		_speed = GameSettings.DefaultSpeed;
 
 		Score = 0;
-		_player = GetNode<Player>("Player");
-
+		_player = GetNode<Player>("../Player");
+		GD.Print("Player health", _player.Health);
 	}
 
 	public override void _PhysicsProcess(double delta)
@@ -81,7 +81,7 @@ public partial class GameManager : Node2D
 
 	private void OnPlayerDamage(int value)
 	{
-		_player.Life -= value;
+		_player.Health -= value;
 	}
 
 	private void AddPickup(int pickupRow)

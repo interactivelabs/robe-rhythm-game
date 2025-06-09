@@ -16,7 +16,7 @@ public partial class Player : CharacterBody2D
 	private PlayerRow _currentRow = PlayerRow.Middle;
 	private PlayerRow _targetRow = PlayerRow.Middle;
 
-	public int Life { get; set; } = 100;
+	public int Health { get; set; } = 100;
 
 	public override void _PhysicsProcess(double delta)
 	{
@@ -32,7 +32,7 @@ public partial class Player : CharacterBody2D
 			_targetRow += 1;
 		}
 
-		if (Life <= 0)
+		if (Health <= 0)
 		{
 			GD.Print("PLayer Dead");
 		}
