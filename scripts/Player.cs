@@ -1,6 +1,6 @@
-namespace Scripts;
-
 using Godot;
+
+namespace Scripts;
 
 public partial class Player : CharacterBody2D
 {
@@ -15,8 +15,16 @@ public partial class Player : CharacterBody2D
 
 	private PlayerRow _currentRow = PlayerRow.Middle;
 	private PlayerRow _targetRow = PlayerRow.Middle;
+	private float _middle;
 
 	public int Health { get; set; } = 100;
+
+	public override void _Ready()
+	{
+		_middle = GetViewportRect().Size.Y / 2;
+		GlobalPosition = new Vector2(0, _middle);
+		base._Ready();
+	}
 
 	public override void _PhysicsProcess(double delta)
 	{
@@ -37,7 +45,7 @@ public partial class Player : CharacterBody2D
 			GD.Print("PLayer Dead");
 		}
 
-		var targetY = (int)_targetRow * GameSettings.RowSize;
+		var targetY = (int)_targetRow * GameSettings.Instance.RowSize + _middle;
 		Position = new Vector2(0, targetY);
 		Velocity = new Vector2(0, Mathf.Lerp(0, targetY, PlayerSpeed * (float)delta));
 

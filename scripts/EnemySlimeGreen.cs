@@ -1,6 +1,6 @@
-namespace Scripts;
-
 using Godot;
+
+namespace Scripts;
 
 public delegate void DamageEventHandler(int value);
 

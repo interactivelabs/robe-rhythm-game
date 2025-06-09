@@ -1,6 +1,6 @@
-namespace Scripts;
-
 using Godot;
+
+namespace Scripts;
 
 public partial class LeftMovingNode : Node2D
 {

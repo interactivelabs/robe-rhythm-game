@@ -1,7 +1,8 @@
-[gd_scene load_steps=10 format=3 uid="uid://d4d6uwhtectdk"]
+[gd_scene load_steps=12 format=3 uid="uid://d4d6uwhtectdk"]
 
 [ext_resource type="Script" uid="uid://cr8rlij22sd8n" path="res://scripts/Game.cs" id="1_lnu2h"]
 [ext_resource type="PackedScene" uid="uid://d1728yvp4jf6q" path="res://scenes/conductor.tscn" id="1_yqjtg"]
+[ext_resource type="Script" uid="uid://buma77rbiogy0" path="res://scripts/TerrainManager.cs" id="2_kvpfn"]
 [ext_resource type="AudioStream" uid="uid://74hgx2jgqkq0" path="res://assets/music/apt-rose.mp3" id="2_lnu2h"]
 [ext_resource type="PackedScene" uid="uid://cscrxvi65lvso" path="res://scenes/texture.tscn" id="2_u5sy4"]
 [ext_resource type="Script" uid="uid://oiq2yk4s3sor" path="res://scripts/GameManager.cs" id="3_p57ef"]
@@ -9,10 +10,14 @@
 [ext_resource type="PackedScene" uid="uid://dc27aygxtyip5" path="res://scenes/player.tscn" id="4_lbhrr"]
 [ext_resource type="PackedScene" uid="uid://doajnarr755g4" path="res://scenes/coin.tscn" id="5_vtaks"]
 [ext_resource type="Script" uid="uid://bnj5xrm22xbmv" path="res://scripts/Conductor.cs" id="9_vtaks"]
+[ext_resource type="PackedScene" uid="uid://bgi6q43gvctf2" path="res://scenes/game_ui.tscn" id="10_vtaks"]
 
-[node name="Game" type="Node2D" node_paths=PackedStringArray("TerrainScene")]
+[node name="Game" type="Node2D"]
 script = ExtResource("1_lnu2h")
-TerrainScene = NodePath("Terrain")
+
+[node name="TerrainManager" type="Node2D" parent="." node_paths=PackedStringArray("TerrainScene")]
+script = ExtResource("2_kvpfn")
+TerrainScene = NodePath("../Terrain")
 Terrains = Array[PackedScene]([ExtResource("2_u5sy4")])
 
 [node name="GameManager" type="Node2D" parent="." node_paths=PackedStringArray("ObstaclesScene", "PickupsScene")]
@@ -29,6 +34,10 @@ stream = ExtResource("2_lnu2h")
 script = ExtResource("9_vtaks")
 _startTimer = NodePath("../GameManager/SpawnerTimer")
 
+[node name="Camera2D" type="Camera2D" parent="."]
+anchor_mode = 0
+position_smoothing_enabled = true
+
 [node name="Terrain" type="Node2D" parent="."]
 
 [node name="Obstacles" type="Node2D" parent="."]
@@ -38,9 +47,8 @@ _startTimer = NodePath("../GameManager/SpawnerTimer")
 [node name="Player" parent="." instance=ExtResource("4_lbhrr")]
 z_index = 5
 
-[node name="Camera2D" type="Camera2D" parent="."]
-position = Vector2(55, 0)
-zoom = Vector2(8, 8)
-position_smoothing_enabled = true
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="GameUI" parent="CanvasLayer" instance=ExtResource("10_vtaks")]
 
 [connection signal="timeout" from="GameManager/SpawnerTimer" to="GameManager" method="_on_spawner_timer_timeout"]

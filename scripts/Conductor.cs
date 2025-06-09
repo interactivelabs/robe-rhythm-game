@@ -1,7 +1,7 @@
-namespace Scripts;
-
 using Godot;
 using System;
+
+namespace Scripts;
 
 public partial class Conductor : AudioStreamPlayer
 {

@@ -1,21 +1,18 @@
-namespace Scripts;
-
 using Godot;
+
+namespace Scripts;
 
 public partial class GameManager : Node2D
 {
 
 	[Export] public Node2D ObstaclesScene;
-
 	[Export] public Node2D PickupsScene;
-
 	[Export] public PackedScene[] Obstacles;
 	[Export] public PackedScene[] Pickups;
 
 	public int Score;
 
 	private Player _player;
-
 	private Timer _spawnerTimer;
 
 	private float _speed = 50.0f;
@@ -26,6 +23,10 @@ public partial class GameManager : Node2D
 
 	public override void _Ready()
 	{
+		var middle = GetViewportRect().Size.Y / 2;
+		ObstaclesScene.GlobalPosition = new Vector2(0, middle);
+		PickupsScene.GlobalPosition = new Vector2(0, middle);
+
 		GD.Print("Game Manager Started!");
 		_spawnerTimer = GetNode<Timer>("SpawnerTimer");
 		_spawnerTimer.Start();
@@ -34,7 +35,6 @@ public partial class GameManager : Node2D
 
 		Score = 0;
 		_player = GetNode<Player>("../Player");
-		GD.Print("Player health", _player.Health);
 	}
 
 	public override void _PhysicsProcess(double delta)
@@ -57,7 +57,7 @@ public partial class GameManager : Node2D
 
 		if (_nextColumnOffset <= 0)
 		{
-			_nextColumnOffset = GameSettings.RowSize; // Reset the offset for the next column
+			_nextColumnOffset = GameSettings.Instance.RowSize; // Reset the offset for the next column
 		}
 
 		base._PhysicsProcess(delta);
@@ -74,7 +74,7 @@ public partial class GameManager : Node2D
 		var obstacle = Obstacles[GD.RandRange(0, Obstacles.Length - 1)];
 		var obstacleInstance = obstacle.Instantiate<EnemySlimeGreen>();
 		obstacleInstance.GlobalPosition = new Vector2(0, 0);
-		obstacleInstance.GlobalPosition = new Vector2(GameSettings.MaxColumns * GameSettings.RowSize, obstacleRow * GameSettings.RowSize);
+		obstacleInstance.GlobalPosition = new Vector2(GameSettings.MaxColumns * GameSettings.Instance.RowSize, obstacleRow * GameSettings.Instance.RowSize);
 		obstacleInstance.OnDamage += OnPlayerDamage;
 		ObstaclesScene.CallDeferred(Node.MethodName.AddChild, obstacleInstance);
 	}
@@ -89,7 +89,7 @@ public partial class GameManager : Node2D
 		var pickup = Pickups[GD.RandRange(0, Pickups.Length - 1)];
 		var pickupInstance = pickup.Instantiate<Coin>();
 		pickupInstance.GlobalPosition = new Vector2(0, 0);
-		pickupInstance.GlobalPosition = new Vector2(GameSettings.MaxColumns * GameSettings.RowSize, pickupRow * GameSettings.RowSize);
+		pickupInstance.GlobalPosition = new Vector2(GameSettings.MaxColumns * GameSettings.Instance.RowSize, pickupRow * GameSettings.Instance.RowSize);
 		pickupInstance.OnScore += OnScoreUpdate;
 		PickupsScene.CallDeferred(Node.MethodName.AddChild, pickupInstance);
 		_canAddPickups = GameSettings.GetRandomNumber(1, 3);
