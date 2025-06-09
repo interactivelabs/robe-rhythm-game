@@ -16,6 +16,8 @@ public partial class Player : CharacterBody2D
 	private PlayerRow _currentRow = PlayerRow.Middle;
 	private PlayerRow _targetRow = PlayerRow.Middle;
 
+	public int Life { get; set; } = 100;
+
 	public override void _PhysicsProcess(double delta)
 	{
 
@@ -28,6 +30,11 @@ public partial class Player : CharacterBody2D
 		else if (Input.IsActionJustPressed("ui_down") && _targetRow < PlayerRow.Bottom)
 		{
 			_targetRow += 1;
+		}
+
+		if (Life <= 0)
+		{
+			GD.Print("PLayer Dead");
 		}
 
 		var targetY = (int)_targetRow * GameSettings.RowSize;

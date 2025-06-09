@@ -2,31 +2,19 @@ namespace Scripts;
 
 using Godot;
 
-public partial class EnemySlimeGreen : CharacterBody2D
+public delegate void DamageEventHandler(int value);
+
+public partial class EnemySlimeGreen : LeftMovingNode
 {
+    public event DamageEventHandler OnDamage;
+
     [Export]
-    public float Speed { get; set; }
+    public int Value { get; set; } = 1;
 
-    public override void _Ready()
+    private void _on_body_entered(Node2D body)
     {
-        if (Speed == 0)
-        {
-            Speed = GameSettings.DefaultSpeed;
-        }
-        base._Ready();
-    }
-
-    public override void _PhysicsProcess(double delta)
-    {
-        Position -= new Vector2(Speed * (float)delta, 0);
-
-        // TODO: check if the texture is off-screen
-        // If the texture is off-screen, remove it from the scene
-        if (Position.X < -80)
-        {
-            QueueFree();
-        }
-
-        base._PhysicsProcess(delta);
+        if (body is not CharacterBody2D) return;
+        GD.Print("Player damaged");
+        OnDamage?.Invoke(Value);
     }
 }

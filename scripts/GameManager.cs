@@ -5,21 +5,25 @@ using Godot;
 public partial class GameManager : Node2D
 {
 
-	[Export] private Node2D _obstaclesScene;
+	[Export] public Node2D ObstaclesScene;
 
-	[Export] private Node2D _pickupsScene;
+	[Export] public Node2D PickupsScene;
 
-	[Export] private PackedScene[] _obstacles;
-	[Export] private PackedScene[] _pickups;
+	[Export] public PackedScene[] Obstacles;
+	[Export] public PackedScene[] Pickups;
+
+	public int Score;
+
+	private Player _player;
 
 	private Timer _spawnerTimer;
 
 	private float _speed = 50.0f;
-	private float _nextColumnOffset = 0f;
+	private float _nextColumnOffset;
 
 	private bool _canAddObstacles = true;
+	private int _canAddPickups;
 
-	// Called when the node enters the scene tree for the first time.
 	public override void _Ready()
 	{
 		GD.Print("Game Manager Started!");
@@ -27,40 +31,28 @@ public partial class GameManager : Node2D
 		_spawnerTimer.Start();
 
 		_speed = GameSettings.DefaultSpeed;
-		// _NextColumnOffset = GameSettings.RowSize;
+
+		Score = 0;
+		_player = GetNode<Player>("Player");
+
 	}
 
 	public override void _PhysicsProcess(double delta)
 	{
+		var obstacleRow = GameSettings.GetRandomNumber(-1, GameSettings.RowsInColumn - 2);
 		var progress = _speed * (float)delta;
 		_nextColumnOffset -= progress;
-		if (_nextColumnOffset <= 0 && _obstacles.Length > 0 && _canAddObstacles)
+		if (_nextColumnOffset <= 0 && Obstacles.Length > 0 && _canAddObstacles)
 		{
-			var obstacle = _obstacles[GD.RandRange(0, _obstacles.Length - 1)];
-			var obstacleInstance = obstacle.Instantiate<Node2D>();
-			obstacleInstance.GlobalPosition = new Vector2(0, 0);
-			// This is -2 because we start at -1 for the top row
-			var obstacleRow = GD.RandRange(-1, GameSettings.RowsInColumn - 2);
-			obstacleInstance.GlobalPosition = new Vector2(GameSettings.MaxColumns * GameSettings.RowSize, obstacleRow * GameSettings.RowSize);
-			_obstaclesScene.AddChild(obstacleInstance);
-			// _canAddObstacles = false;
-
-			// TODO: Add a pickup after every 3 obstacles
-
-			var pickup = _pickups[GD.RandRange(0, _pickups.Length - 1)];
-			var pickupInstance = pickup.Instantiate<Node2D>();
-			pickupInstance.GlobalPosition = new Vector2(0, 0);
-			// This is -2 because we start at -1 for the top row
-
-			var pickupRow = obstacleRow;
-			while (pickupRow == obstacleRow)
-			{
-				pickupRow = GD.RandRange(-1, GameSettings.RowsInColumn - 2);
-			}
-
-			pickupInstance.GlobalPosition = new Vector2(GameSettings.MaxColumns * GameSettings.RowSize, pickupRow * GameSettings.RowSize);
-			_pickupsScene.AddChild(pickupInstance);
+			AddObstacle(obstacleRow);
 			_canAddObstacles = false;
+		}
+
+		if (_nextColumnOffset <= 0 && Obstacles.Length > 0 && _canAddPickups <= 0)
+		{
+			var pickupRow = GameSettings.GetRandomNumber(-1, GameSettings.RowsInColumn - 2, obstacleRow);
+			AddPickup(pickupRow);
+			_canAddPickups = GameSettings.GetRandomNumber(1, 3);
 		}
 
 		if (_nextColumnOffset <= 0)
@@ -71,9 +63,41 @@ public partial class GameManager : Node2D
 		base._PhysicsProcess(delta);
 	}
 
-	public void _on_spawner_timer_timeout()
+	private void _on_spawner_timer_timeout()
 	{
 		_canAddObstacles = true;
+		_canAddPickups -= 1;
+	}
+
+	private void AddObstacle(int obstacleRow)
+	{
+		var obstacle = Obstacles[GD.RandRange(0, Obstacles.Length - 1)];
+		var obstacleInstance = obstacle.Instantiate<EnemySlimeGreen>();
+		obstacleInstance.GlobalPosition = new Vector2(0, 0);
+		obstacleInstance.GlobalPosition = new Vector2(GameSettings.MaxColumns * GameSettings.RowSize, obstacleRow * GameSettings.RowSize);
+		obstacleInstance.OnDamage += OnPlayerDamage;
+		ObstaclesScene.CallDeferred(Node.MethodName.AddChild, obstacleInstance);
+	}
+
+	private void OnPlayerDamage(int value)
+	{
+		_player.Life -= value;
+	}
+
+	private void AddPickup(int pickupRow)
+	{
+		var pickup = Pickups[GD.RandRange(0, Pickups.Length - 1)];
+		var pickupInstance = pickup.Instantiate<Coin>();
+		pickupInstance.GlobalPosition = new Vector2(0, 0);
+		pickupInstance.GlobalPosition = new Vector2(GameSettings.MaxColumns * GameSettings.RowSize, pickupRow * GameSettings.RowSize);
+		pickupInstance.OnScore += OnScoreUpdate;
+		PickupsScene.CallDeferred(Node.MethodName.AddChild, pickupInstance);
+		_canAddPickups = GameSettings.GetRandomNumber(1, 3);
+	}
+
+	private void OnScoreUpdate(int value)
+	{
+		Score += value;
 	}
 
 }

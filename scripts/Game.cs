@@ -5,31 +5,29 @@ using Godot;
 public partial class Game : Node2D
 {
 
-	[Export] private Node2D _terrainScene;
+	[Export] public Node2D TerrainScene;
 
-	[Export] private PackedScene[] _terrain;
+	[Export] public PackedScene[] Terrains;
 
-	AudioStreamPlayer songPlayer;
+	private AudioStreamPlayer _songPlayer;
 
 	private double _bpm = 152;
 	private float _speed = 50.0f;
-
 	private float _nextColumnOffset = 0f;
-
 
 	// Called when the node enters the scene tree for the first time.
 	public override void _Ready()
 	{
 		GD.Print("Game Started!");
 
-		songPlayer = GetNode<AudioStreamPlayer>("Conductor");
+		_songPlayer = GetNode<AudioStreamPlayer>("Conductor");
 		// songPlayer.Play();
 
 		// _Speed = 60f / _bpm;
 		_speed = GameSettings.DefaultSpeed;
 		// _NextColumnOffset = GameSettings.RowSize;
 
-		_terrainScene.GlobalPosition = new Vector2(0, 0);
+		TerrainScene.GlobalPosition = new Vector2(0, 0);
 
 		// Initialize the terrain
 		InitializeTerrain();
@@ -65,11 +63,11 @@ public partial class Game : Node2D
 
 	private void AddTerrainBlock(int column, int row)
 	{
-		var terrain = _terrain[0];
+		var terrain = Terrains[0];
 		var terrainInstance = terrain.Instantiate<Node2D>();
 		terrainInstance.GlobalPosition = new Vector2(column * GameSettings.RowSize, row * GameSettings.RowSize);
 		terrainInstance.Scale = new Vector2(GameSettings.TileScaleSize, GameSettings.TileScaleSize);
-		_terrainScene.AddChild(terrainInstance);
+		TerrainScene.AddChild(terrainInstance);
 	}
 
 }

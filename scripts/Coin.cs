@@ -2,45 +2,20 @@ namespace Scripts;
 
 using Godot;
 
-public partial class Coin : Area2D
+public delegate void ScoreEventHandler(int value);
+
+public partial class Coin : LeftMovingNode
 {
-
-    [Signal]
-    public delegate void ScoreUpdateEventHandler(int score);
-
-    [Export]
-    public float Speed { get; set; }
+    public event ScoreEventHandler OnScore;
 
     [Export]
     public int Value { get; set; } = 1;
 
-    public override void _Ready()
+    private void _on_body_entered(Node2D body)
     {
-        if (Speed == 0)
-        {
-            Speed = GameSettings.DefaultSpeed;
-        }
-        base._Ready();
-    }
-
-    public override void _PhysicsProcess(double delta)
-    {
-        Position -= new Vector2(Speed * (float)delta, 0);
-
-        // TODO: check if the texture is off-screen
-        // If the texture is off-screen, remove it from the scene
-        if (Position.X < GameSettings.RowSize * 2 * -1)
-        {
-            QueueFree();
-        }
-
-        base._PhysicsProcess(delta);
-    }
-
-    public void _on_body_entered(Node2D body)
-    {
-        EmitSignal(SignalName.ScoreUpdate, Value);
-
+        if (body is not CharacterBody2D) return;
+        OnScore?.Invoke(Value);
         QueueFree();
     }
+
 }

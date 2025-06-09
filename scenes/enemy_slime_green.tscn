@@ -42,8 +42,9 @@ animations = [{
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_ppyls"]
 size = Vector2(13.5, 12.5)
 
-[node name="SlimeGreen" type="CharacterBody2D"]
+[node name="SlimeGreen" type="Area2D" node_paths=PackedStringArray("VisibleOnScreen")]
 script = ExtResource("1_ieyfl")
+VisibleOnScreen = NodePath("VisibleOnScreenNotifier2D")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 position = Vector2(0, -6)
@@ -53,3 +54,9 @@ frame_progress = 0.703964
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("RectangleShape2D_ppyls")
+
+[node name="VisibleOnScreenNotifier2D" type="VisibleOnScreenNotifier2D" parent="."]
+position = Vector2(-1.19209e-07, 0)
+scale = Vector2(0.7, 0.6)
+
+[connection signal="body_entered" from="." to="." method="_on_body_entered"]
