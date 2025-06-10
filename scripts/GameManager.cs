@@ -23,11 +23,12 @@ public partial class GameManager : Node2D
 
 	public override void _Ready()
 	{
+		GD.Print("Game Manager Started!");
+
 		var middle = GetViewportRect().Size.Y / 2;
 		ObstaclesScene.GlobalPosition = new Vector2(0, middle);
 		PickupsScene.GlobalPosition = new Vector2(0, middle);
 
-		GD.Print("Game Manager Started!");
 		_spawnerTimer = GetNode<Timer>("SpawnerTimer");
 		_spawnerTimer.Start();
 
@@ -71,10 +72,12 @@ public partial class GameManager : Node2D
 
 	private void AddObstacle(int obstacleRow)
 	{
+		var obstacleScale = GameSettings.Instance.TileScaleSize * 1.4f;
 		var obstacle = Obstacles[GD.RandRange(0, Obstacles.Length - 1)];
 		var obstacleInstance = obstacle.Instantiate<EnemySlimeGreen>();
 		obstacleInstance.GlobalPosition = new Vector2(0, 0);
 		obstacleInstance.GlobalPosition = new Vector2(GameSettings.MaxColumns * GameSettings.Instance.RowSize, obstacleRow * GameSettings.Instance.RowSize);
+		obstacleInstance.Scale = new Vector2(obstacleScale, obstacleScale);
 		obstacleInstance.OnDamage += OnPlayerDamage;
 		ObstaclesScene.CallDeferred(Node.MethodName.AddChild, obstacleInstance);
 	}
@@ -86,10 +89,12 @@ public partial class GameManager : Node2D
 
 	private void AddPickup(int pickupRow)
 	{
+		var pickupScale = GameSettings.Instance.TileScaleSize * 1.5f;
 		var pickup = Pickups[GD.RandRange(0, Pickups.Length - 1)];
 		var pickupInstance = pickup.Instantiate<Coin>();
 		pickupInstance.GlobalPosition = new Vector2(0, 0);
 		pickupInstance.GlobalPosition = new Vector2(GameSettings.MaxColumns * GameSettings.Instance.RowSize, pickupRow * GameSettings.Instance.RowSize);
+		pickupInstance.Scale = new Vector2(pickupScale, pickupScale);
 		pickupInstance.OnScore += OnScoreUpdate;
 		PickupsScene.CallDeferred(Node.MethodName.AddChild, pickupInstance);
 		_canAddPickups = GameSettings.GetRandomNumber(1, 3);

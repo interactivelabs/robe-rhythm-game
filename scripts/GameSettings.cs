@@ -8,19 +8,26 @@ public partial class GameSettings : Node
     public static GameSettings Instance { get; private set; }
 
     private const int TextureSize = 48;
-
-    public float TileScaleSize = 0.5f;
-    public float RowSize;
-
+    private const int ScreenChunks = 6;
     public const int RowsInColumn = 3;
-    public const int MaxColumns = 10;
+    public const int MaxColumns = 12;
+    public const float DefaultSpeed = 150.0f;
 
-    public const float DefaultSpeed = 50.0f;
+    public float TileScaleSize { get; private set; } = 0.5f;
+    public float RowSize { get; private set; }
 
     public override void _Ready()
     {
-        Instance = this;
+        GD.Print("Game Settings Started!");
 
+        Instance = this;
+        RowSize = TextureSize * TileScaleSize;
+    }
+
+    public void ReCalculateScale(Rect2 viewportSize)
+    {
+        var verticalChunkSize = viewportSize.Size.Y / ScreenChunks;
+        TileScaleSize = verticalChunkSize / TextureSize;
         RowSize = TextureSize * TileScaleSize;
     }
 

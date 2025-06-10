@@ -19,7 +19,6 @@ public partial class Game : Node2D
 		// _Speed = 60f / _bpm;
 		_speed = GameSettings.DefaultSpeed;
 		// _NextColumnOffset = GameSettings.RowSize;
-
 	}
 
 }

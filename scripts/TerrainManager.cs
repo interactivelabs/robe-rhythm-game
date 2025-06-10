@@ -15,6 +15,8 @@ public partial class TerrainManager : Node2D
     {
 
         GD.Print("TerrainManager started");
+        GameSettings.Instance.ReCalculateScale(GetViewportRect());
+
         Speed = GameSettings.DefaultSpeed;
 
         var middle = GetViewportRect().Size.Y / 2;

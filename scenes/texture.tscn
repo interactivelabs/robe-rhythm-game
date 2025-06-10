@@ -11,3 +11,5 @@ script = ExtResource("2_ixmrb")
 VisibleOnScreen = NodePath("VisibleOnScreenNotifier2D")
 
 [node name="VisibleOnScreenNotifier2D" type="VisibleOnScreenNotifier2D" parent="."]
+position = Vector2(-4.76837e-07, 4.76837e-07)
+scale = Vector2(2.9, 2.4)
