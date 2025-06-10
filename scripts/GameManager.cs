@@ -9,12 +9,11 @@ public partial class GameManager : Node2D
     [Export] public PackedScene[] Obstacles;
     [Export] public PackedScene[] Pickups;
 
-    public int Score;
-
     private Player _player;
     private Timer _spawnerTimer;
     private GameUi _gameUi;
 
+    private int _score;
     private float _speed = 50.0f;
     private float _nextColumnOffset;
 
@@ -29,15 +28,15 @@ public partial class GameManager : Node2D
         ObstaclesScene.GlobalPosition = new Vector2(0, middle);
         PickupsScene.GlobalPosition = new Vector2(0, middle);
 
+        _gameUi = GetNode<GameUi>("../CanvasGameUI/GameUI");
         _spawnerTimer = GetNode<Timer>("SpawnerTimer");
         _spawnerTimer.Start();
 
         _speed = GameSettings.DefaultSpeed;
-
-        Score = 0;
+        _score = 0;
 
         _player = GetNode<Player>("../Player");
-        _gameUi = GetNode<GameUi>("../CanvasGameUI/GameUI");
+        _player.OnPlayerStateChange += OnPlayerStateChange;
     }
 
     public override void _PhysicsProcess(double delta)
@@ -79,14 +78,24 @@ public partial class GameManager : Node2D
         obstacleInstance.GlobalPosition = new Vector2(GameSettings.MaxColumns * GameSettings.Instance.RowSize,
             obstacleRow * GameSettings.Instance.RowSize);
         obstacleInstance.Scale = new Vector2(obstacleScale, obstacleScale);
+        obstacleInstance.DamageValue = GameSettings.GetRandomNumber(10, 20);
         obstacleInstance.OnDamage += OnPlayerDamage;
         ObstaclesScene.CallDeferred(Node.MethodName.AddChild, obstacleInstance);
     }
 
     private void OnPlayerDamage(int value)
     {
-        _player.Health -= value;
+        _player.DamageTaken(value);
         _gameUi.UpdateHealthLabel(_player.Health);
+    }
+
+    private void OnPlayerStateChange(PlayerState playerState)
+    {
+        if (playerState == PlayerState.Dead)
+        {
+            GD.Print("Game Over");
+            // TODO: Add game over and restart UI
+        }
     }
 
     private void AddPickup(int pickupRow)
@@ -105,7 +114,7 @@ public partial class GameManager : Node2D
 
     private void OnScoreUpdate(int value)
     {
-        Score += value;
-        _gameUi.UpdateScoreLabel(Score);
+        _score += value;
+        _gameUi.UpdateScoreLabel(_score);
     }
 }

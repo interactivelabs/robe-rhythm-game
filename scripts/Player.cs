@@ -1,10 +1,30 @@
+using System.Collections.Generic;
 using Godot;
 
 namespace Scripts;
 
+public enum PlayerState
+{
+    Running,
+    Hit,
+    Dead
+}
+
+public delegate void PlayerStateChangeEventHandler(PlayerState playerState);
+
 public partial class Player : CharacterBody2D
 {
-    private const float PlayerSpeed = 2.0f;
+    public event PlayerStateChangeEventHandler OnPlayerStateChange;
+
+    private readonly Dictionary<PlayerState, double> _stateTimeouts = new()
+    {
+        { PlayerState.Running , 0},
+        { PlayerState.Hit, .3 },
+        { PlayerState.Dead, 0 }
+    };
+
+    private PlayerState _currentState;
+    private double _currentStateTimeout;
 
     private enum PlayerRow
     {
@@ -15,10 +35,11 @@ public partial class Player : CharacterBody2D
 
     private PlayerRow _currentRow = PlayerRow.Middle;
     private PlayerRow _targetRow = PlayerRow.Middle;
+    private float _rowChangeSpeed = 2.0f;
 
     private float _middle;
     private float _left;
-    public int Health { get; set; } = 100;
+    public int Health { get; private set; } = 100;
 
     public override void _Ready()
     {
@@ -40,12 +61,49 @@ public partial class Player : CharacterBody2D
             _targetRow -= 1;
         else if (Input.IsActionJustPressed("ui_down") && _targetRow < PlayerRow.Bottom) _targetRow += 1;
 
-        if (Health <= 0) GD.Print("PLayer Dead");
-
         var targetY = (int)_targetRow * GameSettings.Instance.RowSize + _middle;
         Position = new Vector2(_left, targetY);
-        Velocity = new Vector2(0, Mathf.Lerp(0, targetY, PlayerSpeed * (float)delta));
+        Velocity = new Vector2(0, Mathf.Lerp(0, targetY, _rowChangeSpeed * (float)delta));
 
         MoveAndSlide();
+    }
+
+    private void StateChange(PlayerState playerState)
+    {
+        GD.Print("Player State Changed");
+        _currentState = playerState;
+        _currentStateTimeout = _stateTimeouts[_currentState];
+        switch (_currentState)
+        {
+            case PlayerState.Hit:
+                GD.Print("Player Hit");
+                break;
+            case PlayerState.Dead:
+                GD.Print("Player Dead");
+                break;
+            case PlayerState.Running:
+            default:
+                GD.Print("Player Running");
+                break;
+        }
+        OnPlayerStateChange?.Invoke(_currentState);
+    }
+
+    public override void _Process(double delta)
+    {
+        switch (_currentState)
+        {
+            case PlayerState.Hit:
+                _currentStateTimeout -= delta;
+                if (_currentStateTimeout <= 0) StateChange(PlayerState.Running);
+                break;
+        }
+        base._Process(delta);
+    }
+
+    public void DamageTaken(int value)
+    {
+        Health -= value;
+        StateChange(Health <= 0 ? PlayerState.Dead : PlayerState.Hit);
     }
 }
