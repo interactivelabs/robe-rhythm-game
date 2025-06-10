@@ -47,8 +47,8 @@ position_smoothing_enabled = true
 [node name="Player" parent="." instance=ExtResource("4_lbhrr")]
 z_index = 5
 
-[node name="CanvasLayer" type="CanvasLayer" parent="."]
+[node name="CanvasGameUI" type="CanvasLayer" parent="."]
 
-[node name="GameUI" parent="CanvasLayer" instance=ExtResource("10_vtaks")]
+[node name="GameUI" parent="CanvasGameUI" instance=ExtResource("10_vtaks")]
 
 [connection signal="timeout" from="GameManager/SpawnerTimer" to="GameManager" method="_on_spawner_timer_timeout"]

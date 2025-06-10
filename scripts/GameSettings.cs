@@ -11,7 +11,7 @@ public partial class GameSettings : Node
     private const int ScreenChunks = 6;
     public const int RowsInColumn = 3;
     public const int MaxColumns = 12;
-    public const float DefaultSpeed = 150.0f;
+    public const float DefaultSpeed = 200.0f;
 
     public float TileScaleSize { get; private set; } = 0.5f;
     public float RowSize { get; private set; }

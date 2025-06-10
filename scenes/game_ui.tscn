@@ -1,12 +1,17 @@
-[gd_scene load_steps=2 format=3 uid="uid://bgi6q43gvctf2"]
+[gd_scene load_steps=4 format=3 uid="uid://bgi6q43gvctf2"]
 
+[ext_resource type="Script" uid="uid://b3bny3fcy7ec0" path="res://scripts/GameUi.cs" id="1_rns2u"]
 [ext_resource type="Texture2D" uid="uid://dov1j3o5l3l3a" path="res://assets/sprites/CoinBag.png" id="1_yubou"]
+[ext_resource type="Texture2D" uid="uid://cmaqr0fgqo0yh" path="res://assets/sprites/Heart_Red_1.png" id="3_u001w"]
 
-[node name="GameUI" type="Control"]
+[node name="GameUI" type="Control" node_paths=PackedStringArray("ScoreValueLabel", "HealthValueLabel")]
 layout_mode = 3
 anchor_right = 1.0
 anchor_bottom = 0.05
 grow_horizontal = 2
+script = ExtResource("1_rns2u")
+ScoreValueLabel = NodePath("PanelContainer/MarginContainer/HBoxContainer/ScoreValue")
+HealthValueLabel = NodePath("PanelContainer/MarginContainer/HBoxContainer/HealthValue")
 
 [node name="PanelContainer" type="PanelContainer" parent="."]
 layout_mode = 1
@@ -33,6 +38,22 @@ text = "Score"
 layout_mode = 2
 texture = ExtResource("1_yubou")
 
-[node name="HealthBar" type="Label" parent="PanelContainer/MarginContainer/HBoxContainer"]
+[node name="ScoreValue" type="Label" parent="PanelContainer/MarginContainer/HBoxContainer"]
+layout_mode = 2
+text = "0"
+
+[node name="VSeparator" type="VSeparator" parent="PanelContainer/MarginContainer/HBoxContainer"]
+custom_minimum_size = Vector2(20, 0)
+layout_mode = 2
+
+[node name="HealthLabel" type="Label" parent="PanelContainer/MarginContainer/HBoxContainer"]
 layout_mode = 2
 text = "Health"
+
+[node name="TextureRect" type="TextureRect" parent="PanelContainer/MarginContainer/HBoxContainer"]
+layout_mode = 2
+texture = ExtResource("3_u001w")
+
+[node name="HealthValue" type="Label" parent="PanelContainer/MarginContainer/HBoxContainer"]
+layout_mode = 2
+text = "100"

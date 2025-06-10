@@ -13,6 +13,7 @@ public partial class GameManager : Node2D
 
     private Player _player;
     private Timer _spawnerTimer;
+    private GameUi _gameUi;
 
     private float _speed = 50.0f;
     private float _nextColumnOffset;
@@ -34,12 +35,14 @@ public partial class GameManager : Node2D
         _speed = GameSettings.DefaultSpeed;
 
         Score = 0;
+
         _player = GetNode<Player>("../Player");
+        _gameUi = GetNode<GameUi>("../CanvasGameUI/GameUI");
     }
 
     public override void _PhysicsProcess(double delta)
     {
-        var obstacleRow = GameSettings.GetRandomNumber(-1, GameSettings.RowsInColumn - 2);
+        var obstacleRow = GameSettings.GetRandomNumber(-1, GameSettings.RowsInColumn - 1);
         var progress = _speed * (float)delta;
         _nextColumnOffset -= progress;
         if (_nextColumnOffset <= 0 && Obstacles.Length > 0 && _canAddObstacles)
@@ -50,7 +53,7 @@ public partial class GameManager : Node2D
 
         if (_nextColumnOffset <= 0 && Obstacles.Length > 0 && _canAddPickups <= 0)
         {
-            var pickupRow = GameSettings.GetRandomNumber(-1, GameSettings.RowsInColumn - 2, obstacleRow);
+            var pickupRow = GameSettings.GetRandomNumber(-1, GameSettings.RowsInColumn - 1, obstacleRow);
             AddPickup(pickupRow);
             _canAddPickups = GameSettings.GetRandomNumber(1, 3);
         }
@@ -83,6 +86,7 @@ public partial class GameManager : Node2D
     private void OnPlayerDamage(int value)
     {
         _player.Health -= value;
+        _gameUi.UpdateHealthLabel(_player.Health);
     }
 
     private void AddPickup(int pickupRow)
@@ -102,5 +106,6 @@ public partial class GameManager : Node2D
     private void OnScoreUpdate(int value)
     {
         Score += value;
+        _gameUi.UpdateScoreLabel(Score);
     }
 }

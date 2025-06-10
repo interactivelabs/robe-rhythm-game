@@ -13,7 +13,6 @@ public partial class EnemySlimeGreen : LeftMovingNode
     private void _on_body_entered(Node2D body)
     {
         if (body is not CharacterBody2D) return;
-        GD.Print("Player damaged");
         OnDamage?.Invoke(Value);
     }
 }
