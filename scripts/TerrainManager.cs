@@ -45,7 +45,7 @@ public partial class TerrainManager : Node2D
 
     private void AddTerrainColumn(int column)
     {
-        for (var j = -1; j < GameSettings.RowsInColumn -1; j++) AddTerrainBlock(column, j);
+        for (var j = -1; j < GameSettings.RowsInColumn - 1; j++) AddTerrainBlock(column, j);
     }
 
     private void AddTerrainBlock(int column, int row)

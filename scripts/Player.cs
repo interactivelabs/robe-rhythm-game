@@ -18,7 +18,7 @@ public partial class Player : CharacterBody2D
 
     private readonly Dictionary<PlayerState, double> _stateTimeouts = new()
     {
-        { PlayerState.Running , 0},
+        { PlayerState.Running, 0 },
         { PlayerState.Hit, .3 },
         { PlayerState.Dead, 0 }
     };
@@ -86,6 +86,7 @@ public partial class Player : CharacterBody2D
                 GD.Print("Player Running");
                 break;
         }
+
         OnPlayerStateChange?.Invoke(_currentState);
     }
 
@@ -98,6 +99,7 @@ public partial class Player : CharacterBody2D
                 if (_currentStateTimeout <= 0) StateChange(PlayerState.Running);
                 break;
         }
+
         base._Process(delta);
     }
 

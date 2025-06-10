@@ -91,11 +91,8 @@ public partial class GameManager : Node2D
 
     private void OnPlayerStateChange(PlayerState playerState)
     {
-        if (playerState == PlayerState.Dead)
-        {
-            GD.Print("Game Over");
-            // TODO: Add game over and restart UI
-        }
+        if (playerState == PlayerState.Dead) GD.Print("Game Over");
+        // TODO: Add game over and restart UI
     }
 
     private void AddPickup(int pickupRow)
