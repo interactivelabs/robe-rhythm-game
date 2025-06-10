@@ -8,8 +8,7 @@ public partial class EnemySlimeGreen : LeftMovingNode
 {
     public event DamageEventHandler OnDamage;
 
-    [Export]
-    public int Value { get; set; } = 1;
+    [Export] public int Value { get; set; } = 1;
 
     private void _on_body_entered(Node2D body)
     {

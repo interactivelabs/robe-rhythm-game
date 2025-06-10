@@ -4,105 +4,103 @@ namespace Scripts;
 
 public partial class GameManager : Node2D
 {
+    [Export] public Node2D ObstaclesScene;
+    [Export] public Node2D PickupsScene;
+    [Export] public PackedScene[] Obstacles;
+    [Export] public PackedScene[] Pickups;
 
-	[Export] public Node2D ObstaclesScene;
-	[Export] public Node2D PickupsScene;
-	[Export] public PackedScene[] Obstacles;
-	[Export] public PackedScene[] Pickups;
+    public int Score;
 
-	public int Score;
+    private Player _player;
+    private Timer _spawnerTimer;
 
-	private Player _player;
-	private Timer _spawnerTimer;
+    private float _speed = 50.0f;
+    private float _nextColumnOffset;
 
-	private float _speed = 50.0f;
-	private float _nextColumnOffset;
+    private bool _canAddObstacles = true;
+    private int _canAddPickups;
 
-	private bool _canAddObstacles = true;
-	private int _canAddPickups;
+    public override void _Ready()
+    {
+        GD.Print("Game Manager Started!");
 
-	public override void _Ready()
-	{
-		GD.Print("Game Manager Started!");
+        var middle = GetViewportRect().Size.Y / 2;
+        ObstaclesScene.GlobalPosition = new Vector2(0, middle);
+        PickupsScene.GlobalPosition = new Vector2(0, middle);
 
-		var middle = GetViewportRect().Size.Y / 2;
-		ObstaclesScene.GlobalPosition = new Vector2(0, middle);
-		PickupsScene.GlobalPosition = new Vector2(0, middle);
+        _spawnerTimer = GetNode<Timer>("SpawnerTimer");
+        _spawnerTimer.Start();
 
-		_spawnerTimer = GetNode<Timer>("SpawnerTimer");
-		_spawnerTimer.Start();
+        _speed = GameSettings.DefaultSpeed;
 
-		_speed = GameSettings.DefaultSpeed;
+        Score = 0;
+        _player = GetNode<Player>("../Player");
+    }
 
-		Score = 0;
-		_player = GetNode<Player>("../Player");
-	}
+    public override void _PhysicsProcess(double delta)
+    {
+        var obstacleRow = GameSettings.GetRandomNumber(-1, GameSettings.RowsInColumn - 2);
+        var progress = _speed * (float)delta;
+        _nextColumnOffset -= progress;
+        if (_nextColumnOffset <= 0 && Obstacles.Length > 0 && _canAddObstacles)
+        {
+            AddObstacle(obstacleRow);
+            _canAddObstacles = false;
+        }
 
-	public override void _PhysicsProcess(double delta)
-	{
-		var obstacleRow = GameSettings.GetRandomNumber(-1, GameSettings.RowsInColumn - 2);
-		var progress = _speed * (float)delta;
-		_nextColumnOffset -= progress;
-		if (_nextColumnOffset <= 0 && Obstacles.Length > 0 && _canAddObstacles)
-		{
-			AddObstacle(obstacleRow);
-			_canAddObstacles = false;
-		}
+        if (_nextColumnOffset <= 0 && Obstacles.Length > 0 && _canAddPickups <= 0)
+        {
+            var pickupRow = GameSettings.GetRandomNumber(-1, GameSettings.RowsInColumn - 2, obstacleRow);
+            AddPickup(pickupRow);
+            _canAddPickups = GameSettings.GetRandomNumber(1, 3);
+        }
 
-		if (_nextColumnOffset <= 0 && Obstacles.Length > 0 && _canAddPickups <= 0)
-		{
-			var pickupRow = GameSettings.GetRandomNumber(-1, GameSettings.RowsInColumn - 2, obstacleRow);
-			AddPickup(pickupRow);
-			_canAddPickups = GameSettings.GetRandomNumber(1, 3);
-		}
+        if (_nextColumnOffset <= 0)
+            _nextColumnOffset = GameSettings.Instance.RowSize; // Reset the offset for the next column
 
-		if (_nextColumnOffset <= 0)
-		{
-			_nextColumnOffset = GameSettings.Instance.RowSize; // Reset the offset for the next column
-		}
+        base._PhysicsProcess(delta);
+    }
 
-		base._PhysicsProcess(delta);
-	}
+    private void _on_spawner_timer_timeout()
+    {
+        _canAddObstacles = true;
+        _canAddPickups -= 1;
+    }
 
-	private void _on_spawner_timer_timeout()
-	{
-		_canAddObstacles = true;
-		_canAddPickups -= 1;
-	}
+    private void AddObstacle(int obstacleRow)
+    {
+        var obstacleScale = GameSettings.Instance.TileScaleSize * 1.4f;
+        var obstacle = Obstacles[GD.RandRange(0, Obstacles.Length - 1)];
+        var obstacleInstance = obstacle.Instantiate<EnemySlimeGreen>();
+        obstacleInstance.GlobalPosition = new Vector2(0, 0);
+        obstacleInstance.GlobalPosition = new Vector2(GameSettings.MaxColumns * GameSettings.Instance.RowSize,
+            obstacleRow * GameSettings.Instance.RowSize);
+        obstacleInstance.Scale = new Vector2(obstacleScale, obstacleScale);
+        obstacleInstance.OnDamage += OnPlayerDamage;
+        ObstaclesScene.CallDeferred(Node.MethodName.AddChild, obstacleInstance);
+    }
 
-	private void AddObstacle(int obstacleRow)
-	{
-		var obstacleScale = GameSettings.Instance.TileScaleSize * 1.4f;
-		var obstacle = Obstacles[GD.RandRange(0, Obstacles.Length - 1)];
-		var obstacleInstance = obstacle.Instantiate<EnemySlimeGreen>();
-		obstacleInstance.GlobalPosition = new Vector2(0, 0);
-		obstacleInstance.GlobalPosition = new Vector2(GameSettings.MaxColumns * GameSettings.Instance.RowSize, obstacleRow * GameSettings.Instance.RowSize);
-		obstacleInstance.Scale = new Vector2(obstacleScale, obstacleScale);
-		obstacleInstance.OnDamage += OnPlayerDamage;
-		ObstaclesScene.CallDeferred(Node.MethodName.AddChild, obstacleInstance);
-	}
+    private void OnPlayerDamage(int value)
+    {
+        _player.Health -= value;
+    }
 
-	private void OnPlayerDamage(int value)
-	{
-		_player.Health -= value;
-	}
+    private void AddPickup(int pickupRow)
+    {
+        var pickupScale = GameSettings.Instance.TileScaleSize * 1.5f;
+        var pickup = Pickups[GD.RandRange(0, Pickups.Length - 1)];
+        var pickupInstance = pickup.Instantiate<Coin>();
+        pickupInstance.GlobalPosition = new Vector2(0, 0);
+        pickupInstance.GlobalPosition = new Vector2(GameSettings.MaxColumns * GameSettings.Instance.RowSize,
+            pickupRow * GameSettings.Instance.RowSize);
+        pickupInstance.Scale = new Vector2(pickupScale, pickupScale);
+        pickupInstance.OnScore += OnScoreUpdate;
+        PickupsScene.CallDeferred(Node.MethodName.AddChild, pickupInstance);
+        _canAddPickups = GameSettings.GetRandomNumber(1, 3);
+    }
 
-	private void AddPickup(int pickupRow)
-	{
-		var pickupScale = GameSettings.Instance.TileScaleSize * 1.5f;
-		var pickup = Pickups[GD.RandRange(0, Pickups.Length - 1)];
-		var pickupInstance = pickup.Instantiate<Coin>();
-		pickupInstance.GlobalPosition = new Vector2(0, 0);
-		pickupInstance.GlobalPosition = new Vector2(GameSettings.MaxColumns * GameSettings.Instance.RowSize, pickupRow * GameSettings.Instance.RowSize);
-		pickupInstance.Scale = new Vector2(pickupScale, pickupScale);
-		pickupInstance.OnScore += OnScoreUpdate;
-		PickupsScene.CallDeferred(Node.MethodName.AddChild, pickupInstance);
-		_canAddPickups = GameSettings.GetRandomNumber(1, 3);
-	}
-
-	private void OnScoreUpdate(int value)
-	{
-		Score += value;
-	}
-
+    private void OnScoreUpdate(int value)
+    {
+        Score += value;
+    }
 }
