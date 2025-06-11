@@ -1,5 +1,3 @@
 namespace Scripts;
 
-public partial class Texture : LeftMovingNode
-{
-}
+public partial class Texture : LeftMovingNode;

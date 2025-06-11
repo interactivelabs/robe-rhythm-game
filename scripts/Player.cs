@@ -16,7 +16,9 @@ public partial class Player : CharacterBody2D
 {
     public event PlayerStateChangeEventHandler OnPlayerStateChange;
 
-    [Export] private AnimatedSprite2D _playerAnimations;
+    [Export] public AnimatedSprite2D PlayerAnimations;
+    [Export] public AudioStreamPlayer2D HurtSound;
+    [Export] public AudioStreamPlayer2D DeathSound;
 
     private readonly Dictionary<PlayerState, double> _stateTimeouts = new()
     {
@@ -73,23 +75,21 @@ public partial class Player : CharacterBody2D
 
     private void StateChange(PlayerState playerState)
     {
-        GD.Print("Player State Changed");
         _currentState = playerState;
         _currentStateTimeout = _stateTimeouts[_currentState];
         switch (_currentState)
         {
             case PlayerState.Hit:
-                GD.Print("Player Hit");
-                _playerAnimations.Play("hit");
+                PlayerAnimations.Play("hit");
+                HurtSound.Play();
                 break;
             case PlayerState.Dead:
-                GD.Print("Player Dead");
-                _playerAnimations.Play("dead");
+                PlayerAnimations.Play("dead");
+                DeathSound.Play();
                 break;
             case PlayerState.Running:
             default:
-                _playerAnimations.Play("default");
-                GD.Print("Player Running");
+                PlayerAnimations.Play("default");
                 break;
         }
 
@@ -112,6 +112,7 @@ public partial class Player : CharacterBody2D
     public void DamageTaken(int value)
     {
         Health -= value;
+        if (Health <= 0) Health = 0;
         StateChange(Health <= 0 ? PlayerState.Dead : PlayerState.Hit);
     }
 }

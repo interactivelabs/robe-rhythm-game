@@ -1,8 +1,18 @@
-[gd_scene load_steps=4 format=3 uid="uid://bgi6q43gvctf2"]
+[gd_scene load_steps=5 format=3 uid="uid://bgi6q43gvctf2"]
 
 [ext_resource type="Script" uid="uid://b3bny3fcy7ec0" path="res://scripts/GameUi.cs" id="1_rns2u"]
 [ext_resource type="Texture2D" uid="uid://dov1j3o5l3l3a" path="res://assets/sprites/CoinBag.png" id="1_yubou"]
 [ext_resource type="Texture2D" uid="uid://cmaqr0fgqo0yh" path="res://assets/sprites/Heart_Red_1.png" id="3_u001w"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_u001w"]
+bg_color = Color(0.188235, 0.188235, 0.188235, 0.835294)
+corner_radius_top_left = 1
+corner_radius_top_right = 1
+corner_radius_bottom_right = 1
+corner_radius_bottom_left = 1
+corner_detail = 20
+shadow_size = 3
+shadow_offset = Vector2(3, 3)
 
 [node name="GameUI" type="Control" node_paths=PackedStringArray("ScoreValueLabel", "HealthValueLabel")]
 layout_mode = 3
@@ -21,6 +31,7 @@ anchor_bottom = 1.0
 offset_bottom = 12.0
 grow_horizontal = 2
 grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_u001w")
 
 [node name="MarginContainer" type="MarginContainer" parent="PanelContainer"]
 layout_mode = 2

@@ -5,10 +5,9 @@ namespace Scripts;
 public partial class TerrainManager : Node2D
 {
     [Export] public Node2D TerrainScene;
-
     [Export] public PackedScene[] Terrains;
-    [Export] public float Speed { get; set; }
 
+    private float _speed;
     private float _nextColumnOffset;
 
     public override void _Ready()
@@ -16,7 +15,8 @@ public partial class TerrainManager : Node2D
         GD.Print("TerrainManager started");
         GameSettings.Instance.ReCalculateScale(GetViewportRect());
 
-        Speed = GameSettings.DefaultSpeed;
+        GameSettings.Instance.OnSpeedChanged += speed => _speed = speed;
+        _speed = GameSettings.Instance.Speed;
 
         var middle = GetViewportRect().Size.Y / 2;
         TerrainScene.GlobalPosition = new Vector2(0, middle);
@@ -27,7 +27,7 @@ public partial class TerrainManager : Node2D
 
     public override void _PhysicsProcess(double delta)
     {
-        var progress = Speed * (float)delta;
+        var progress = _speed * (float)delta;
         _nextColumnOffset -= progress;
         if (_nextColumnOffset <= 0)
         {
@@ -52,6 +52,7 @@ public partial class TerrainManager : Node2D
     {
         var terrain = Terrains[0];
         var terrainInstance = terrain.Instantiate<Node2D>();
+
         terrainInstance.GlobalPosition =
             new Vector2(column * GameSettings.Instance.RowSize, row * GameSettings.Instance.RowSize);
         terrainInstance.Scale = new Vector2(GameSettings.Instance.TileScaleSize, GameSettings.Instance.TileScaleSize);

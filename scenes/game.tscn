@@ -1,7 +1,8 @@
-[gd_scene load_steps=12 format=3 uid="uid://d4d6uwhtectdk"]
+[gd_scene load_steps=13 format=3 uid="uid://d4d6uwhtectdk"]
 
 [ext_resource type="Script" uid="uid://cr8rlij22sd8n" path="res://scripts/Game.cs" id="1_lnu2h"]
 [ext_resource type="PackedScene" uid="uid://d1728yvp4jf6q" path="res://scenes/conductor.tscn" id="1_yqjtg"]
+[ext_resource type="Texture2D" uid="uid://b014cm41p361u" path="res://assets/images/bg_1.jpg" id="2_dinhu"]
 [ext_resource type="Script" uid="uid://buma77rbiogy0" path="res://scripts/TerrainManager.cs" id="2_kvpfn"]
 [ext_resource type="AudioStream" uid="uid://74hgx2jgqkq0" path="res://assets/music/apt-rose.mp3" id="2_lnu2h"]
 [ext_resource type="PackedScene" uid="uid://cscrxvi65lvso" path="res://scenes/texture.tscn" id="2_u5sy4"]
@@ -15,24 +16,31 @@
 [node name="Game" type="Node2D"]
 script = ExtResource("1_lnu2h")
 
+[node name="GameBackgroud" type="Sprite2D" parent="."]
+scale = Vector2(1.1, 1.1)
+texture = ExtResource("2_dinhu")
+centered = false
+
 [node name="TerrainManager" type="Node2D" parent="." node_paths=PackedStringArray("TerrainScene")]
 script = ExtResource("2_kvpfn")
 TerrainScene = NodePath("../Terrain")
 Terrains = Array[PackedScene]([ExtResource("2_u5sy4")])
 
-[node name="GameManager" type="Node2D" parent="." node_paths=PackedStringArray("ObstaclesScene", "PickupsScene")]
+[node name="GameManager" type="Node2D" parent="." node_paths=PackedStringArray("ObstaclesScene", "PickupsScene", "SongPlayer", "SpawnTimer")]
 script = ExtResource("3_p57ef")
 ObstaclesScene = NodePath("../Obstacles")
 PickupsScene = NodePath("../Pickups")
 Obstacles = Array[PackedScene]([ExtResource("4_0tnpc")])
 Pickups = Array[PackedScene]([ExtResource("5_vtaks")])
+SongPlayer = NodePath("../Conductor")
+SpawnTimer = NodePath("SpawnerTimer")
 
 [node name="SpawnerTimer" type="Timer" parent="GameManager"]
 
-[node name="Conductor" parent="." node_paths=PackedStringArray("_startTimer") instance=ExtResource("1_yqjtg")]
+[node name="Conductor" parent="." instance=ExtResource("1_yqjtg")]
 stream = ExtResource("2_lnu2h")
+bus = &"Music"
 script = ExtResource("9_vtaks")
-_startTimer = NodePath("../GameManager/SpawnerTimer")
 
 [node name="Camera2D" type="Camera2D" parent="."]
 anchor_mode = 0

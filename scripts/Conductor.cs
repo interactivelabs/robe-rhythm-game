@@ -5,20 +5,15 @@ namespace Scripts;
 
 public partial class Conductor : AudioStreamPlayer
 {
-    [Export] public double Bpm = 152;
+    [Export] public double Bpm = 149;
     [Export] public int Measures = 4;
 
-    [Export] private Timer _startTimer;
-
-    private double _songPosition = 0.0;
+    private double _songPosition;
     private int _songPositionInBeats = 1;
     private double _secPerBeat = 60;
-    private double _lastReportedBeat = 0;
-    private int _beatsBeforeStart = 0;
+    private double _lastReportedBeat;
+    private int _beatsBeforeStart;
     private double _measure = 1;
-
-    private int _closest = 0;
-    private double _timeOffBeat = 0;
 
     [Signal]
     public delegate void BeatEventHandler(float position);
@@ -32,13 +27,10 @@ public partial class Conductor : AudioStreamPlayer
         _secPerBeat /= Bpm;
     }
 
-
     // Called when the node enters the scene tree for the first time.
     public override void _Ready()
     {
         GD.Print("Conductor Started!");
-
-        _secPerBeat = 60 / Bpm;
     }
 
     public override void _PhysicsProcess(double delta)
@@ -61,24 +53,4 @@ public partial class Conductor : AudioStreamPlayer
         _measure++;
     }
 
-    private void _on_start_timer_timeout()
-    {
-        _songPositionInBeats += 1;
-        if (_songPositionInBeats < _beatsBeforeStart - 1)
-        {
-            _startTimer.Start();
-        }
-        else if (_songPositionInBeats == _beatsBeforeStart - 1)
-        {
-            _startTimer.WaitTime -= AudioServer.GetTimeToNextMix() + AudioServer.GetOutputLatency();
-            _startTimer.Start();
-        }
-        else
-        {
-            Play();
-            _startTimer.Stop();
-        }
-
-        ReportBeat();
-    }
 }

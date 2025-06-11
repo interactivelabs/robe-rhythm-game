@@ -3,16 +3,22 @@ using System;
 
 namespace Scripts;
 
+public delegate void SpeedChangedEventHandler(float newSpeed);
+
 public partial class GameSettings : Node
 {
     public static GameSettings Instance { get; private set; }
 
+    public event SpeedChangedEventHandler OnSpeedChanged;
+
+    private const float DefaultSpeed = 200.0f;
     private const int TextureSize = 48;
     private const int ScreenChunks = 6;
     public const int RowsInColumn = 3;
     public const int MaxColumns = 12;
-    public const float DefaultSpeed = 200.0f;
+    public const int SpeedIncreaseScore = 100;
 
+    public float Speed { get; private set; } = DefaultSpeed;
     public float TileScaleSize { get; private set; } = 0.5f;
     public float RowSize { get; private set; }
 
@@ -29,6 +35,12 @@ public partial class GameSettings : Node
         var verticalChunkSize = viewportSize.Size.Y / ScreenChunks;
         TileScaleSize = verticalChunkSize / TextureSize;
         RowSize = TextureSize * TileScaleSize;
+    }
+
+    public void SetSpeed(float newSpeed)
+    {
+        Speed = newSpeed;
+        OnSpeedChanged?.Invoke(newSpeed);
     }
 
     public static int GetRandomNumber(int min, int max, int? exclude = null)

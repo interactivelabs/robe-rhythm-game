@@ -1,7 +1,9 @@
-[gd_scene load_steps=28 format=3 uid="uid://dc27aygxtyip5"]
+[gd_scene load_steps=30 format=3 uid="uid://dc27aygxtyip5"]
 
 [ext_resource type="Script" uid="uid://cau6l7kvs6p1q" path="res://scripts/Player.cs" id="1_g2els"]
 [ext_resource type="Texture2D" uid="uid://dqghr7xut1122" path="res://assets/sprites/Warrior_SheetnoEffect.png" id="2_g2els"]
+[ext_resource type="AudioStream" uid="uid://dx2bjkd2xm4ke" path="res://assets/sounds/hurt.wav" id="3_qhqgy"]
+[ext_resource type="AudioStream" uid="uid://bih60ylngqo1x" path="res://assets/sounds/dead.wav" id="4_dqkch"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_g2els"]
 atlas = ExtResource("2_g2els")
@@ -185,10 +187,12 @@ animations = [{
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_3vyb7"]
 size = Vector2(5.5, 5)
 
-[node name="Player" type="CharacterBody2D" node_paths=PackedStringArray("_playerAnimations")]
+[node name="Player" type="CharacterBody2D" node_paths=PackedStringArray("PlayerAnimations", "HurtSound", "DeathSound")]
 motion_mode = 1
 script = ExtResource("1_g2els")
-_playerAnimations = NodePath("AnimatedSprite2D")
+PlayerAnimations = NodePath("AnimatedSprite2D")
+HurtSound = NodePath("Hurt")
+DeathSound = NodePath("Dead")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 position = Vector2(4, -3)
@@ -198,3 +202,11 @@ autoplay = "default"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("RectangleShape2D_3vyb7")
+
+[node name="Hurt" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("3_qhqgy")
+bus = &"SFX"
+
+[node name="Dead" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("4_dqkch")
+bus = &"SFX"
