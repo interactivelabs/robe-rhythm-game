@@ -16,6 +16,8 @@ public partial class Player : CharacterBody2D
 {
     public event PlayerStateChangeEventHandler OnPlayerStateChange;
 
+    [Export] private AnimatedSprite2D _playerAnimations;
+
     private readonly Dictionary<PlayerState, double> _stateTimeouts = new()
     {
         { PlayerState.Running, 0 },
@@ -39,6 +41,7 @@ public partial class Player : CharacterBody2D
 
     private float _middle;
     private float _left;
+
     public int Health { get; private set; } = 100;
 
     public override void _Ready()
@@ -77,12 +80,15 @@ public partial class Player : CharacterBody2D
         {
             case PlayerState.Hit:
                 GD.Print("Player Hit");
+                _playerAnimations.Play("hit");
                 break;
             case PlayerState.Dead:
                 GD.Print("Player Dead");
+                _playerAnimations.Play("dead");
                 break;
             case PlayerState.Running:
             default:
+                _playerAnimations.Play("default");
                 GD.Print("Player Running");
                 break;
         }
